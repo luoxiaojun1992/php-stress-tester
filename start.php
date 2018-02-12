@@ -1,28 +1,18 @@
 <?php
 
-if (!extension_loaded('swoole')) {
-    echo '请安装Swoole2.1.0+';
-    exit(1);
-}
-if (!function_exists('go')) {
-    echo '请安装Swoole2.1.0+';
-    exit(1);
-}
-if (!class_exists('chan')) {
-    echo '请安装Swoole2.1.0+';
-    exit(1);
-}
-if (!class_exists('Co\Http\Client')) {
-    echo '请安装Swoole2.1.0+';
-    exit(1);
-}
+require_once __DIR__ . '/functions.php';
 
+//环境检查
+checkEnvironment();
+
+//获取参数
 $c = $argv[1] ?? 50;
 $host = $argv[2] ?? 'api.fourleaver.com';
 $uri = $argv[3] ?? '/index/action/index?access-token=test';
 $port = $argv[4] ?? 443;
 $ssl = boolval($argv[5] ?? 1);
 
+//校验参数
 if (!is_int($port) && !ctype_digit($port)) {
     echo '端口格式不正确';
     exit(1);
@@ -30,6 +20,7 @@ if (!is_int($port) && !ctype_digit($port)) {
 
 $executeTime = new chan($c);
 
+//统计压测性能
 go(function () use ($executeTime, $c){
     $minTime = 0;
     $maxTime = 0;
@@ -64,6 +55,7 @@ go(function () use ($executeTime, $c){
     echo PHP_EOL;
 });
 
+//发起压测请求
 for ($i = 0; $i < $c; ++$i) {
     go(function () use ($executeTime, $host, $uri) {
         $start = microtime(true);
