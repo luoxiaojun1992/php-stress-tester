@@ -11,3 +11,10 @@ A simple stress tester based on swoole coroutine.
 ```shell
 php start.php 100 www.baidu.com / 443 1
 ```
+
+## Arguments
+1. Concurrency
+2. Hostname
+3. Uri
+4. Port
+5. SSL
