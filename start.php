@@ -16,6 +16,8 @@ if (!class_exists('Co\Http\Client')) {
 $c = $argv[1] ?? 50;
 $host = $argv[2] ?? 'api.fourleaver.com';
 $uri = $argv[3] ?? '/index/action/index?access-token=test';
+$port = $argv[4] ?? 443;
+$ssl = boolval($argv[5] ?? 1);
 
 $executeTime = new chan($c);
 
