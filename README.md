@@ -11,6 +11,12 @@ A simple stress tester based on swoole coroutine.
 ```shell
 php start.php 100 www.baidu.com / 443 1
 ```
+Output
+```shell
+测试中...
+请求并发: 100
+平均耗时: 192.02973604202毫
+```
 
 ## Arguments
 1. Concurrency
