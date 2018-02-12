@@ -1,5 +1,9 @@
 <?php
 
+if (!extension_loaded('swoole')) {
+    echo '请安装Swoole2.1.0+';
+    exit(1);
+}
 if (!function_exists('go')) {
     echo '请安装Swoole2.1.0+';
     exit(1);
@@ -18,6 +22,11 @@ $host = $argv[2] ?? 'api.fourleaver.com';
 $uri = $argv[3] ?? '/index/action/index?access-token=test';
 $port = $argv[4] ?? 443;
 $ssl = boolval($argv[5] ?? 1);
+
+if (!is_int($port) && !ctype_digit($port)) {
+    echo '端口格式不正确';
+    exit(1);
+}
 
 $executeTime = new chan($c);
 
