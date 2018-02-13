@@ -10,8 +10,8 @@ checkEnvironment();
 //获取参数
 $c = $argv[1] ?? 100;
 $n = $argv[2] ?? 1000;
-$host = $argv[3] ?? 'api.fourleaver.com';
-$uri = $argv[4] ?? '/index/action/index?access-token=test';
+$host = $argv[3] ?? 'www.baidu.com';
+$uri = $argv[4] ?? '/';
 $port = $argv[5] ?? 443;
 $ssl = boolval($argv[6] ?? 1);
 
