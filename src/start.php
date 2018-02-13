@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/constants.php';
+
 require_once __DIR__ . '/functions.php';
 
 //环境检查
@@ -14,6 +16,10 @@ $port = $argv[5] ?? 443;
 $ssl = boolval($argv[6] ?? 1);
 
 //校验参数
+if ($c > MAX_COROUTINE) {
+    echo '最大支持3000并发';
+    exit(1);
+}
 if (!is_int($port) && !ctype_digit($port)) {
     echo '端口格式不正确';
     exit(1);
