@@ -18,10 +18,12 @@ $ssl = boolval($argv[6] ?? 1);
 //校验参数
 if ($c > MAX_COROUTINE) {
     echo '最大支持3000并发';
+    echo PHP_EOL;
     exit(1);
 }
 if (!is_int($port) && !ctype_digit($port)) {
     echo '端口格式不正确';
+    echo PHP_EOL;
     exit(1);
 }
 
