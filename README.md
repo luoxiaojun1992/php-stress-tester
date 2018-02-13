@@ -9,20 +9,22 @@ A simple stress tester based on swoole coroutine.
 
 ## Usage
 ```shell
-php start.php 100 www.baidu.com / 443 1
+php start.php 100 1000 www.baidu.com / 443 1
 ```
 Output
 ```shell
 测试中...
 请求并发: 100
-平均耗时: 183.86986732483毫秒
-最大耗时: 216.06707572937毫秒
-最小耗时: 149.50203895569毫秒
+请求总数: 1000
+平均耗时: 45.958206415176毫秒
+最大耗时: 217.64087677002毫秒
+最小耗时: 25.42519569397毫秒
 ```
 
 ## Arguments
 1. Concurrency
-2. Hostname
-3. Uri
-4. Port
-5. SSL
+2. Requests
+3. Hostname
+4. Uri
+5. Port
+6. SSL
