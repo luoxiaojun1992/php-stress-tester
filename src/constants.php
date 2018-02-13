@@ -1,3 +1,3 @@
 <?php
 
-defined('MAX_COROUTINE') || define('MAX_COROUTINE', 3000);
+defined('MAX_COROUTINE') || define('MAX_COROUTINE', 2999);

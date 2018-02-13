@@ -17,7 +17,7 @@ $ssl = boolval($argv[6] ?? 1);
 
 //校验参数
 if ($c > MAX_COROUTINE) {
-    echo '最大支持3000并发';
+    echo '最大支持2999并发';
     echo PHP_EOL;
     exit(1);
 }
