@@ -43,7 +43,7 @@ go(function () use ($executeTime, $n, $c){
     echo $executedTimes;
     echo PHP_EOL;
     echo '平均耗时: ';
-    echo ($totalTime / $c) * 1000;
+    echo ($totalTime / $executedTimes) * 1000;
     echo '毫秒';
     echo PHP_EOL;
     echo '最大耗时: ';
