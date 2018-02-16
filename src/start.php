@@ -38,6 +38,12 @@ go(function () use ($executeTime, $result, $n){
     $executedTimes = 0;
     $successTimes = 0;
     $failedTimes = 0;
+    $successMinTime = 0;
+    $successMaxTime = 0;
+    $successTotalTime = 0;
+    $failedMinTime = 0;
+    $failedMaxTime = 0;
+    $failedTotalTime = 0;
     while($executedTimes < $n) {
         $time = $executeTime->pop();
         $totalTime += $time;
@@ -49,8 +55,22 @@ go(function () use ($executeTime, $result, $n){
         }
         if ($result->pop()) {
             ++$successTimes;
+            $successTotalTime += $time;
+            if ($successMinTime <= 0 || $successMinTime > $time) {
+                $successMinTime = $time;
+            }
+            if ($time > $successMaxTime) {
+                $successMaxTime = $time;
+            }
         } else {
             ++$failedTimes;
+            $failedTotalTime += $time;
+            if ($failedMinTime <= 0 || $failedMinTime > $time) {
+                $failedMinTime = $time;
+            }
+            if ($time > $failedMaxTime) {
+                $failedMaxTime = $time;
+            }
         }
         ++$executedTimes;
     }
@@ -72,8 +92,32 @@ go(function () use ($executeTime, $result, $n){
     echo '成功请求总数: ';
     echo $successTimes;
     echo PHP_EOL;
+    echo '成功平均耗时: ';
+    echo ($successTotalTime / $successTimes) * 1000;
+    echo '毫秒';
+    echo PHP_EOL;
+    echo '成功最大耗时: ';
+    echo $successMaxTime * 1000;
+    echo '毫秒';
+    echo PHP_EOL;
+    echo '成功最小耗时: ';
+    echo $successMinTime * 1000;
+    echo '毫秒';
+    echo PHP_EOL;
     echo '失败请求总数: ';
     echo $failedTimes;
+    echo PHP_EOL;
+    echo '失败平均耗时: ';
+    echo ($failedTotalTime / $failedTimes) * 1000;
+    echo '毫秒';
+    echo PHP_EOL;
+    echo '失败最大耗时: ';
+    echo $failedMaxTime * 1000;
+    echo '毫秒';
+    echo PHP_EOL;
+    echo '失败最小耗时: ';
+    echo $failedMinTime * 1000;
+    echo '毫秒';
     echo PHP_EOL;
     exit(0);
 });
