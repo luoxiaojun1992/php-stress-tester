@@ -38,8 +38,8 @@ go(function () use ($response, $n, $c){
     $successTimes = 0;
     $failedTimes = 0;
     while($executedTimes < $n) {
-        if ($response = $response->pop()) {
-            $time = $response['executeTime'];
+        if ($res = $response->pop()) {
+            $time = $res['executeTime'];
             $totalTime += $time;
             if ($minTime <= 0 || $minTime > $time) {
                 $minTime = $time;
@@ -47,7 +47,7 @@ go(function () use ($response, $n, $c){
             if ($time > $maxTime) {
                 $maxTime = $time;
             }
-            if ($response['result']) {
+            if ($res['result']) {
                 ++$successTimes;
             } else {
                 ++$failedTimes;
