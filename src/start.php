@@ -27,10 +27,11 @@ if (!is_int($port) && !ctype_digit($port)) {
     exit(1);
 }
 
-$response = new chan($n);
+$executeTime = new chan($n);
+$result = new chan($n);
 
 //统计压测性能
-go(function () use ($response, $n, $c){
+go(function () use ($executeTime, $result, $n){
     $minTime = 0;
     $maxTime = 0;
     $totalTime = 0;
@@ -38,26 +39,21 @@ go(function () use ($response, $n, $c){
     $successTimes = 0;
     $failedTimes = 0;
     while($executedTimes < $n) {
-        if ($res = $response->pop()) {
-            $time = $res['executeTime'];
-            $totalTime += $time;
-            if ($minTime <= 0 || $minTime > $time) {
-                $minTime = $time;
-            }
-            if ($time > $maxTime) {
-                $maxTime = $time;
-            }
-            if ($res['result']) {
-                ++$successTimes;
-            } else {
-                ++$failedTimes;
-            }
-            ++$executedTimes;
+        $time = $executeTime->pop();
+        $totalTime += $time;
+        if ($minTime <= 0 || $minTime > $time) {
+            $minTime = $time;
         }
+        if ($time > $maxTime) {
+            $maxTime = $time;
+        }
+        if ($result->pop()) {
+            ++$successTimes;
+        } else {
+            ++$failedTimes;
+        }
+        ++$executedTimes;
     }
-    echo '并发数: ';
-    echo $c;
-    echo PHP_EOL;
     echo '请求总数: ';
     echo $executedTimes;
     echo PHP_EOL;
@@ -84,17 +80,13 @@ go(function () use ($response, $n, $c){
 
 //发起压测请求
 for ($i = 0; $i < $c; ++$i) {
-    go(function () use ($response, $host, $uri) {
+    go(function () use ($executeTime, $result, $host, $uri) {
         $http = new Co\Http\Client($host, 443, true);
         while (true) {
             $start = microtime(true);
             $http->get($uri);
-            $result = $http->statusCode == 200;
-            $executeTime = microtime(true) - $start;
-            $response->push([
-                'executeTime' => $executeTime,
-                'result' => $result,
-            ]);
+            $result->push($http->statusCode == 200);
+            $executeTime->push(microtime(true) - $start);
         }
     });
 }
