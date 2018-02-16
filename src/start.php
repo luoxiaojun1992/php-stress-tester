@@ -78,7 +78,7 @@ go(function () use ($executeTime, $result, $n){
     echo $executedTimes;
     echo PHP_EOL;
     echo '平均耗时: ';
-    echo ($totalTime / $executedTimes) * 1000;
+    echo $executedTimes > 0 ? ($totalTime / $executedTimes) * 1000 : 0;
     echo '毫秒';
     echo PHP_EOL;
     echo '最大耗时: ';
@@ -93,7 +93,7 @@ go(function () use ($executeTime, $result, $n){
     echo $successTimes;
     echo PHP_EOL;
     echo '成功平均耗时: ';
-    echo ($successTotalTime / $successTimes) * 1000;
+    echo $successTimes > 0 ? ($successTotalTime / $successTimes) * 1000 : 0;
     echo '毫秒';
     echo PHP_EOL;
     echo '成功最大耗时: ';
@@ -108,7 +108,7 @@ go(function () use ($executeTime, $result, $n){
     echo $failedTimes;
     echo PHP_EOL;
     echo '失败平均耗时: ';
-    echo ($failedTotalTime / $failedTimes) * 1000;
+    echo $failedTimes > 0 ? ($failedTotalTime / $failedTimes) * 1000 : 0;
     echo '毫秒';
     echo PHP_EOL;
     echo '失败最大耗时: ';
