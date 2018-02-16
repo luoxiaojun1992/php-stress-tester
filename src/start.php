@@ -88,8 +88,8 @@ for ($i = 0; $i < $c; ++$i) {
         $http = new Co\Http\Client($host, 443, true);
         while (true) {
             $start = microtime(true);
-            $ret = $http->get($uri);
-            $result = $ret->statusCode == 200;
+            $http->get($uri);
+            $result = $http->statusCode == 200;
             $executeTime = microtime(true) - $start;
             $response->push([
                 'executeTime' => $executeTime,
