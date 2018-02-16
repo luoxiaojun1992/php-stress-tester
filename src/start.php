@@ -27,16 +27,19 @@ if (!is_int($port) && !ctype_digit($port)) {
     exit(1);
 }
 
-$executeTime = new chan($n);
+$response = new chan($n);
 
 //统计压测性能
-go(function () use ($executeTime, $n, $c){
+go(function () use ($response, $n, $c){
     $minTime = 0;
     $maxTime = 0;
     $totalTime = 0;
     $executedTimes = 0;
+    $successTimes = 0;
+    $failedTimes = 0;
     while($executedTimes < $n) {
-        if ($time = $executeTime->pop()) {
+        if ($response = $response->pop()) {
+            $time = $response['executeTime'];
             $totalTime += $time;
             if ($minTime <= 0 || $minTime > $time) {
                 $minTime = $time;
@@ -44,9 +47,17 @@ go(function () use ($executeTime, $n, $c){
             if ($time > $maxTime) {
                 $maxTime = $time;
             }
+            if ($response['result']) {
+                ++$successTimes;
+            } else {
+                ++$failedTimes;
+            }
             ++$executedTimes;
         }
     }
+    echo '并发数: ';
+    echo $c;
+    echo PHP_EOL;
     echo '请求总数: ';
     echo $executedTimes;
     echo PHP_EOL;
@@ -62,17 +73,28 @@ go(function () use ($executeTime, $n, $c){
     echo $minTime * 1000;
     echo '毫秒';
     echo PHP_EOL;
+    echo '成功请求总数: ';
+    echo $successTimes;
+    echo PHP_EOL;
+    echo '失败请求总数: ';
+    echo $failedTimes;
+    echo PHP_EOL;
     exit(0);
 });
 
 //发起压测请求
 for ($i = 0; $i < $c; ++$i) {
-    go(function () use ($executeTime, $host, $uri) {
+    go(function () use ($response, $host, $uri) {
         $http = new Co\Http\Client($host, 443, true);
         while (true) {
             $start = microtime(true);
             $ret = $http->get($uri);
-            $executeTime->push(microtime(true) - $start);
+            $result = $ret->statusCode == 200;
+            $executeTime = microtime(true) - $start;
+            $response->push([
+                'executeTime' => $executeTime,
+                'result' => $result,
+            ]);
         }
     });
 }
