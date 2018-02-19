@@ -28,10 +28,9 @@ if (!is_int($port) && !ctype_digit($port)) {
 }
 
 $executeTime = new chan($n);
-$result = new chan($n);
 
 //统计压测性能
-go(function () use ($executeTime, $result, $n){
+go(function () use ($executeTime, $n){
     $minTime = 0;
     $maxTime = 0;
     $totalTime = 0;
@@ -46,6 +45,8 @@ go(function () use ($executeTime, $result, $n){
     $failedTotalTime = 0;
     while($executedTimes < $n) {
         $time = $executeTime->pop();
+        $result = $time > 0;
+        $time = abs($time);
         $totalTime += $time;
         if ($minTime <= 0 || $minTime > $time) {
             $minTime = $time;
@@ -53,7 +54,7 @@ go(function () use ($executeTime, $result, $n){
         if ($time > $maxTime) {
             $maxTime = $time;
         }
-        if ($result->pop()) {
+        if ($result) {
             ++$successTimes;
             $successTotalTime += $time;
             if ($successMinTime <= 0 || $successMinTime > $time) {
@@ -124,13 +125,16 @@ go(function () use ($executeTime, $result, $n){
 
 //发起压测请求
 for ($i = 0; $i < $c; ++$i) {
-    go(function () use ($executeTime, $result, $host, $uri) {
+    go(function () use ($executeTime, $host, $uri) {
         $http = new Co\Http\Client($host, 443, true);
         while (true) {
             $start = microtime(true);
             $http->get($uri);
-            $result->push($http->statusCode == 200);
-            $executeTime->push(microtime(true) - $start);
+            if ($http->statusCode == 200) {
+                $executeTime->push(microtime(true) - $start);
+            } else {
+                $executeTime->push($start - microtime(true));
+            }
         }
     });
 }
