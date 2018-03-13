@@ -1,3 +1,4 @@
+#! /usr/bin/env php
 <?php
 
 $phar = new Phar('pst.phar', 0, 'pst.phar');
