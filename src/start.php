@@ -28,10 +28,11 @@ if (!is_int($port) && !ctype_digit($port)) {
     exit(1);
 }
 
-$executeTime = new chan($n);
+$executeTime = new chan($n > 0 ? $n : $c * 10);
 
 //统计压测性能
-go(function () use ($executeTime, $n){
+go(function () use ($executeTime, $n, $c){
+    //Regular
     $minTime = 0;
     $maxTime = 0;
     $totalTime = 0;
@@ -44,7 +45,24 @@ go(function () use ($executeTime, $n){
     $failedMinTime = 0;
     $failedMaxTime = 0;
     $failedTotalTime = 0;
-    while($executedTimes < $n) {
+
+    //Qps
+    $successTimesPerSecond = 0;
+    $qps = 0;
+
+    //统计Qps
+    swoole_timer_tick(1000, function () use (&$successTimesPerSecond, &$qps) {
+        if ($successTimesPerSecond > 0) {
+            if ($qps > 0) {
+                $qps = ($successTimesPerSecond + $qps) / 2;
+            } else {
+                $qps = $successTimesPerSecond;
+            }
+            $successTimesPerSecond = 0;
+        }
+    });
+
+    while($n > 0 ? $executedTimes < $n : true) {
         $time = $executeTime->pop();
         $result = $time > 0;
         $time = abs($time);
@@ -57,6 +75,7 @@ go(function () use ($executeTime, $n){
         }
         if ($result) {
             ++$successTimes;
+            ++$successTimesPerSecond;
             $successTotalTime += $time;
             if ($successMinTime <= 0 || $successMinTime > $time) {
                 $successMinTime = $time;
@@ -75,52 +94,24 @@ go(function () use ($executeTime, $n){
             }
         }
         ++$executedTimes;
+
+        //内存保护，超过30MB退出
+        if (memory_get_usage() >= 30000000) {
+            break;
+        }
+
+        //持续压测,每请求$c次,输出一次性能数据
+        if ($n <= 0) {
+            if ($executedTimes % $c == 0) {
+                output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
+                    'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
+                    'failedMaxTime', 'failedMinTime', 'qps'));
+            }
+        }
     }
-    echo '请求总数: ';
-    echo $executedTimes;
-    echo PHP_EOL;
-    echo '平均耗时: ';
-    echo $executedTimes > 0 ? ($totalTime / $executedTimes) * 1000 : 0;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '最大耗时: ';
-    echo $maxTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '最小耗时: ';
-    echo $minTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '成功请求总数: ';
-    echo $successTimes;
-    echo PHP_EOL;
-    echo '成功平均耗时: ';
-    echo $successTimes > 0 ? ($successTotalTime / $successTimes) * 1000 : 0;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '成功最大耗时: ';
-    echo $successMaxTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '成功最小耗时: ';
-    echo $successMinTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '失败请求总数: ';
-    echo $failedTimes;
-    echo PHP_EOL;
-    echo '失败平均耗时: ';
-    echo $failedTimes > 0 ? ($failedTotalTime / $failedTimes) * 1000 : 0;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '失败最大耗时: ';
-    echo $failedMaxTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
-    echo '失败最小耗时: ';
-    echo $failedMinTime * 1000;
-    echo '毫秒';
-    echo PHP_EOL;
+    output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
+        'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
+        'failedMaxTime', 'failedMinTime', 'qps'));
     exit(0);
 });
 
