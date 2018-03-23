@@ -3,6 +3,11 @@
 if (!function_exists('checkEnvironment')) {
     function checkEnvironment()
     {
+        if (php_sapi_name() != 'cli') {
+            echo '请在cli模式下运行本工具';
+            echo PHP_EOL;
+            exit(1);
+        }
         if (!extension_loaded('swoole')) {
             echo '请安装Swoole2.1.0+';
             echo PHP_EOL;
