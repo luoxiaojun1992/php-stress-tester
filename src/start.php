@@ -109,6 +109,10 @@ go(function () use ($executeTime, $n, $c){
             }
         }
     }
+    //防止执行太快，定时器来不及计算Qps
+    if ($qps <= 0) {
+        $qps = $successTimesPerSecond;
+    }
     output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
         'failedMaxTime', 'failedMinTime', 'qps'));
