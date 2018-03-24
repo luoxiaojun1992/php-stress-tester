@@ -119,10 +119,14 @@ go(function () use ($executeTime, $n, $c){
     exit(0);
 });
 
-//发起压测请求
-for ($i = 0; $i < $c; ++$i) {
-    go(function () use ($executeTime, $host, $uri) {
-        $http = new Co\Http\Client($host, 443, true);
+//发起压测请求,1秒增加一个并发,逐渐加压
+$i = 0;
+swoole_timer_tick(1000, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c) {
+    if ($i >= $c) {
+        return;
+    }
+    go(function () use ($executeTime, $host, $uri, $port, $ssl) {
+        $http = new Co\Http\Client($host, $port, $ssl);
         while (true) {
             $start = microtime(true);
             $http->get($uri);
@@ -133,7 +137,9 @@ for ($i = 0; $i < $c; ++$i) {
             }
         }
     });
-}
+    ++$i;
+});
+
 echo '测试中...';
 echo PHP_EOL;
 echo '请求并发: ';
