@@ -47,7 +47,11 @@ if (!function_exists('output')) {
         $failedMaxTime = $params['failedMaxTime'] ?? 0;
         $failedMinTime = $params['failedMinTime'] ?? 0;
         $qps = $params['qps'] ?? 0;
+        $i = $params['i'] ?? 0;
 
+        echo '请求并发: ';
+        echo $i;
+        echo PHP_EOL;
         echo '请求总数: ';
         echo $executedTimes;
         echo PHP_EOL;

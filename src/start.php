@@ -30,10 +30,14 @@ if (!is_int($port) && !ctype_digit($port)) {
     exit(1);
 }
 
+//请求时间channel
 $executeTime = new chan($n > 0 ? $n : $c * 10);
 
+//并发数
+$i = 0;
+
 //统计压测性能
-go(function () use ($executeTime, $n, $c, $memoryLimit){
+go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
     //Regular
     $minTime = 0;
     $maxTime = 0;
@@ -107,7 +111,7 @@ go(function () use ($executeTime, $n, $c, $memoryLimit){
             if ($executedTimes % $c == 0) {
                 output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
                     'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-                    'failedMaxTime', 'failedMinTime', 'qps'));
+                    'failedMaxTime', 'failedMinTime', 'qps', 'i'));
             }
         }
     }
@@ -117,12 +121,11 @@ go(function () use ($executeTime, $n, $c, $memoryLimit){
     }
     output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-        'failedMaxTime', 'failedMinTime', 'qps'));
+        'failedMaxTime', 'failedMinTime', 'qps', 'i'));
     exit(0);
 });
 
 //发起压测请求,1秒增加一个并发,逐渐加压
-$i = 0;
 swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c) {
     if ($i >= $c) {
         return;
