@@ -15,6 +15,8 @@ $host = $argv[3] ?? 'www.baidu.com';
 $uri = $argv[4] ?? '/';
 $port = $argv[5] ?? 443;
 $ssl = boolval($argv[6] ?? 1);
+$step = $argv[7] ?? 10;
+$memoryLimit = 30000000;
 
 //校验参数
 if ($c > MAX_COROUTINE) {
@@ -31,7 +33,7 @@ if (!is_int($port) && !ctype_digit($port)) {
 $executeTime = new chan($n > 0 ? $n : $c * 10);
 
 //统计压测性能
-go(function () use ($executeTime, $n, $c){
+go(function () use ($executeTime, $n, $c, $memoryLimit){
     //Regular
     $minTime = 0;
     $maxTime = 0;
@@ -96,7 +98,7 @@ go(function () use ($executeTime, $n, $c){
         ++$executedTimes;
 
         //内存保护，超过30MB退出
-        if (memory_get_usage() >= 30000000) {
+        if (memory_get_usage() >= $memoryLimit) {
             break;
         }
 
@@ -121,7 +123,7 @@ go(function () use ($executeTime, $n, $c){
 
 //发起压测请求,1秒增加一个并发,逐渐加压
 $i = 0;
-swoole_timer_tick(1000, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c) {
+swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c) {
     if ($i >= $c) {
         return;
     }
