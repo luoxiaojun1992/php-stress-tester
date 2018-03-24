@@ -147,6 +147,6 @@ swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port,
 
 echo '测试中...';
 echo PHP_EOL;
-echo '请求并发: ';
+echo '最大请求并发: ';
 echo $c;
 echo PHP_EOL;
