@@ -70,6 +70,10 @@ if (!function_exists('output')) {
         echo '成功请求总数: ';
         echo $successTimes;
         echo PHP_EOL;
+        echo '成功率: ';
+        echo $executedTimes > 0 ? ($successTimes / $executedTimes) * 100 : 0;
+        echo '%';
+        echo PHP_EOL;
         echo '成功平均耗时: ';
         echo $successTimes > 0 ? ($successTotalTime / $successTimes) * 1000 : 0;
         echo '毫秒';
@@ -84,6 +88,10 @@ if (!function_exists('output')) {
         echo PHP_EOL;
         echo '失败请求总数: ';
         echo $failedTimes;
+        echo PHP_EOL;
+        echo '失败率: ';
+        echo $executedTimes > 0 ? ($failedTimes / $executedTimes) * 100 : 0;
+        echo '%';
         echo PHP_EOL;
         echo '失败平均耗时: ';
         echo $failedTimes > 0 ? ($failedTotalTime / $failedTimes) * 1000 : 0;
