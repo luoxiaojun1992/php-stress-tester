@@ -5,7 +5,8 @@ A simple stress tester based on swoole coroutine.
 
 ## Requirements
 1. Swoole2.1.0+ (编译时请添加参数 --enable-openssl --enable-coroutine)
-2. PHP7.0+ (请使用稳定版，经测试php7.2.0beta3下有内存泄漏问题)
+2. PHP7.0+
+3. 勿同时安装opencensus扩展，经测试有内存泄漏问题
 
 ## Usage
 ```shell
