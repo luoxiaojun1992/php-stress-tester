@@ -54,18 +54,12 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
 
     //Qps
     $successTimesPerSecond = 0;
-    $qps = 0;
+    $qps = -1; //实时QPS,初始值-1
 
     //统计Qps
     swoole_timer_tick(1000, function () use (&$successTimesPerSecond, &$qps) {
-        if ($successTimesPerSecond > 0) {
-            if ($qps > 0) {
-                $qps = ($successTimesPerSecond + $qps) / 2;
-            } else {
-                $qps = $successTimesPerSecond;
-            }
-            $successTimesPerSecond = 0;
-        }
+        $qps = $successTimesPerSecond;
+        $successTimesPerSecond = 0;
     });
 
     while($n > 0 ? $executedTimes < $n : true) {
@@ -116,7 +110,7 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
         }
     }
     //防止执行太快，定时器来不及计算Qps
-    if ($qps <= 0) {
+    if ($qps <= -1) {
         $qps = $successTimesPerSecond;
     }
     output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',

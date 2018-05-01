@@ -105,7 +105,7 @@ if (!function_exists('output')) {
         echo $failedMinTime * 1000;
         echo '毫秒';
         echo PHP_EOL;
-        echo '平均QPS: ';
+        echo 'QPS: ';
         echo $qps;
         echo PHP_EOL;
         echo '内存占用: ';
