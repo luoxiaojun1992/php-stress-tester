@@ -48,6 +48,7 @@ if (!function_exists('output')) {
         $failedMinTime = $params['failedMinTime'] ?? 0;
         $qps = $params['qps'] ?? 0;
         $i = $params['i'] ?? 0;
+        $avgQps = $params['avgQps'] ?? 0;
 
         echo '请求并发: ';
         echo $i;
@@ -105,8 +106,11 @@ if (!function_exists('output')) {
         echo $failedMinTime * 1000;
         echo '毫秒';
         echo PHP_EOL;
-        echo 'QPS: ';
+        echo '实时QPS: ';
         echo $qps;
+        echo PHP_EOL;
+        echo '平均QPS: ';
+        echo $avgQps;
         echo PHP_EOL;
         echo '内存占用: ';
         echo memory_get_usage() / 1000;

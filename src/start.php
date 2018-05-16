@@ -55,11 +55,18 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
     //Qps
     $successTimesPerSecond = 0;
     $qps = -1; //实时QPS,初始值-1
+    $avgQps = -1; //平均QPS
 
     //统计Qps
-    swoole_timer_tick(1000, function () use (&$successTimesPerSecond, &$qps) {
+    swoole_timer_tick(1000, function () use (&$successTimesPerSecond, &$qps, &$avgQps) {
         $qps = $successTimesPerSecond;
         $successTimesPerSecond = 0;
+
+        if ($avgQps <= -1) {
+            $avgQps = $qps;
+        } else {
+            $avgQps = ($avgQps + $qps) / 2;
+        }
     });
 
     while($n > 0 ? $executedTimes < $n : true) {
@@ -105,17 +112,18 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
             if ($executedTimes % $c == 0) {
                 output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
                     'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-                    'failedMaxTime', 'failedMinTime', 'qps', 'i'));
+                    'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps'));
             }
         }
     }
     //防止执行太快，定时器来不及计算Qps
     if ($qps <= -1) {
         $qps = $successTimesPerSecond;
+        $avgQps = $qps;
     }
     output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-        'failedMaxTime', 'failedMinTime', 'qps', 'i'));
+        'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps'));
     exit(0);
 });
 
