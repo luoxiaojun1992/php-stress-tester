@@ -128,8 +128,10 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
 });
 
 //发起压测请求,1秒增加一个并发,逐渐加压
-swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c) {
+$timerId = 0;
+$timerId = swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c, &$timerId) {
     if ($i >= $c) {
+        swoole_timer_clear($timerId);
         return;
     }
     go(function () use ($executeTime, $host, $uri, $port, $ssl) {
