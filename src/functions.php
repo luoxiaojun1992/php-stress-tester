@@ -34,6 +34,8 @@ if (!function_exists('checkEnvironment')) {
 if (!function_exists('output')) {
     function output($params)
     {
+        system('clear');
+
         $executedTimes = $params['executedTimes'] ?? 0;
         $totalTime = $params['totalTime'] ?? 0;
         $maxTime = $params['maxTime'] ?? 0;
