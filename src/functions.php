@@ -34,6 +34,7 @@ if (!function_exists('checkEnvironment')) {
 if (!function_exists('output')) {
     function output($params)
     {
+        //Clear stdout
         system('clear');
 
         $executedTimes = $params['executedTimes'] ?? 0;
