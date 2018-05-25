@@ -132,16 +132,20 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
 
 //发起压测请求,1秒增加一个并发,逐渐加压
 $timerId = 0;
-$timerId = swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c, &$timerId, $http_method, $http_body_arr) {
+$timerId = swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c, &$timerId, $http_method, $http_body, $http_body_arr) {
     if ($i >= $c) {
         swoole_timer_clear($timerId);
         return;
     }
-    go(function () use ($executeTime, $host, $uri, $port, $ssl, $http_method, $http_body_arr) {
+    go(function () use ($executeTime, $host, $uri, $port, $ssl, $http_method, $http_body, $http_body_arr) {
         $http = new Co\Http\Client($host, $port, $ssl);
         $http->setMethod($http_method);
-        if ($http_method != HTTP_METHOD_GET && count($http_body_arr) > 0) {
-            $http->setData($http_body_arr);
+        if ($http_method != HTTP_METHOD_GET) {
+            if (count($http_body_arr) > 0) {
+                $http->setData($http_body_arr);
+            } elseif ($http_body) {
+                $http->setData($http_body);
+            }
         }
         while (true) {
             $start = microtime(true);
