@@ -10,16 +10,16 @@ A simple stress tester based on swoole coroutine.
 
 ## Usage
 ```shell
-GET
+# GET
 php start.php 100 1000 www.baidu.com / 443 1 1
 
-POST
+# POST
 php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
 
-PUT
+# PUT
 php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
 
-DELETE
+# DELETE
 php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
 ```
 Output
