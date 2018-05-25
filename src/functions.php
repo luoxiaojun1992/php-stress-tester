@@ -31,6 +31,30 @@ if (!function_exists('checkEnvironment')) {
     }
 }
 
+if (!function_exists('getOptions')) {
+    function getOptions($args, array $option_names)
+    {
+        $options = [];
+        foreach ($args as $k => $arg) {
+            if (strpos($arg, '-') === 0) {
+                if (strpos($arg, '--') === 0) {
+                    $option_value = substr($arg, 2);
+                    list($option_name, $option_value) = explode('=', $option_value);
+                    if (in_array($option_name, $option_names)) {
+                        $options[$option_name] = $option_value;
+                    }
+                } else {
+                    $option_name = substr($arg, 1);
+                    if (in_array($option_name, $option_names)) {
+                        $options[$option_name] = $args[$k + 1];
+                    }
+                }
+            }
+        }
+        return $options;
+    }
+}
+
 if (!function_exists('output')) {
     function output($params)
     {

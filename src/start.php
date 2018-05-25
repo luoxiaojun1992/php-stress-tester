@@ -9,17 +9,19 @@ require_once __DIR__ . '/functions.php';
 checkEnvironment();
 
 //获取参数
-$c = $argv[1] ?? 100;
-$n = $argv[2] ?? 1000;
-$host = $argv[3] ?? 'www.baidu.com';
-$uri = $argv[4] ?? '/';
-$port = $argv[5] ?? 443;
-$ssl = boolval($argv[6] ?? 1);
-$step = $argv[7] ?? 10;
-$http_method = strtoupper($argv[8] ?? HTTP_METHOD_GET);
-$http_body = $argv[9] ?? '';
+$options = getOptions($argv, ['c', 'n', 'host', 'uri', 'port', 'ssl', 'step', 'http_method', 'http_body', 'memory_limit']);
+$c = $options['c'] ?? 100;
+$n = $options['n'] ?? 1000;
+$host = $options['host'] ?? 'www.baidu.com';
+$uri = $options['uri'] ?? '/';
+$port = $options['port'] ?? 443;
+$ssl = boolval($options['ssl'] ?? 1);
+$step = $options['step'] ?? 10;
+$http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);
+$http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
-$memoryLimit = $argv[10] ?? 30000000;
+$memory_limit = $options['memory_limit'] ?? 30000000;
+
 
 //校验参数
 if ($c > MAX_COROUTINE) {
@@ -40,7 +42,7 @@ $executeTime = new chan($n > 0 ? $n : $c * 10);
 $i = 0;
 
 //统计压测性能
-go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
+go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
     //Regular
     $minTime = 0;
     $maxTime = 0;
@@ -106,7 +108,7 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
         ++$executedTimes;
 
         //内存保护，超过30MB退出
-        if (memory_get_usage() >= $memoryLimit) {
+        if (memory_get_usage() >= $memory_limit) {
             break;
         }
 

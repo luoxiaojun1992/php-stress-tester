@@ -11,16 +11,16 @@ A simple stress tester based on swoole coroutine.
 ## Usage
 ```shell
 # GET
-php start.php 100 1000 www.baidu.com / 443 1 1
+php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1
 
 # POST
-php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
+php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1 -http_method POST -http_body {\"foo\":\"bar\"}
 
 # PUT
-php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
+php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1 -http_method PUT -http_body {\"foo\":\"bar\"}
 
 # DELETE
-php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
+php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1 -http_method DELETE -http_body {\"foo\":\"bar\"}
 ```
 Output
 ```shell
@@ -47,13 +47,13 @@ Output
 ```
 
 ## Arguments
-1. Concurrency
-2. Requests
-3. Hostname
-4. Uri
-5. Port
-6. SSL
-7. Concurrency Step
-8. HTTP Method
-9. HTTP Body
-10. Memory Limit
+1. -c Concurrency
+2. -n Requests
+3. -host Hostname
+4. -uri Uri
+5. -port Port
+6. -ssl SSL
+7. -step Concurrency Step
+8. -http_method HTTP Method
+9. -http_body HTTP Body
+10. -memory_limit Memory Limit
