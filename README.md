@@ -10,7 +10,17 @@ A simple stress tester based on swoole coroutine.
 
 ## Usage
 ```shell
+GET
 php start.php 100 1000 www.baidu.com / 443 1 1
+
+POST
+php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
+
+PUT
+php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
+
+DELETE
+php start.php 100 1000 www.baidu.com / 443 1 1 POST {\"foo\":\"bar\"}
 ```
 Output
 ```shell
@@ -44,4 +54,6 @@ Output
 5. Port
 6. SSL
 7. Concurrency Step
-8. Memory Limit
+8. HTTP Method
+9. HTTP Body
+10. Memory Limit

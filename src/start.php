@@ -16,7 +16,10 @@ $uri = $argv[4] ?? '/';
 $port = $argv[5] ?? 443;
 $ssl = boolval($argv[6] ?? 1);
 $step = $argv[7] ?? 10;
-$memoryLimit = 30000000;
+$http_method = strtoupper($argv[8] ?? HTTP_METHOD_GET);
+$http_body = $argv[9] ?? '';
+$http_body_arr = json_decode($http_body, true);
+$memoryLimit = $argv[10] ?? 30000000;
 
 //校验参数
 if ($c > MAX_COROUTINE) {
@@ -129,16 +132,20 @@ go(function () use ($executeTime, $n, $c, $memoryLimit, &$i){
 
 //发起压测请求,1秒增加一个并发,逐渐加压
 $timerId = 0;
-$timerId = swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c, &$timerId) {
+$timerId = swoole_timer_tick($step, function () use (&$i, $executeTime, $host, $uri, $port, $ssl, $c, &$timerId, $http_method, $http_body_arr) {
     if ($i >= $c) {
         swoole_timer_clear($timerId);
         return;
     }
-    go(function () use ($executeTime, $host, $uri, $port, $ssl) {
+    go(function () use ($executeTime, $host, $uri, $port, $ssl, $http_method, $http_body_arr) {
         $http = new Co\Http\Client($host, $port, $ssl);
+        $http->setMethod($http_method);
+        if ($http_method != HTTP_METHOD_GET && count($http_body_arr) > 0) {
+            $http->setData($http_body_arr);
+        }
         while (true) {
             $start = microtime(true);
-            $http->get($uri);
+            $http->execute($uri);
             if ($http->statusCode == 200) {
                 $executeTime->push(microtime(true) - $start);
             } else {
