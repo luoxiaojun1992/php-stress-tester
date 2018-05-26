@@ -28,13 +28,9 @@ $http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
 $memory_limit = $options['memory_limit'] ?? 30000000;
 
-//帮助信息(待开发)
+//帮助信息
 if (isset($options['help'])) {
-    echo <<<EOF
-帮助信息：
-暂无
-EOF;
-    echo PHP_EOL;
+    help();
     exit(0);
 }
 
