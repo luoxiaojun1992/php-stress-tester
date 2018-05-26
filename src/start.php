@@ -26,7 +26,7 @@ $step = $options['step'] ?? 10;
 $http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);
 $http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
-$memory_limit = $options['memory_limit'] ?? 30000000;
+$memory_limit = doubleval($options['memory_limit'] ?? 30000000);
 
 //帮助信息
 if (isset($options['help'])) {
