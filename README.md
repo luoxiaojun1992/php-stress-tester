@@ -21,8 +21,11 @@ php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1
 
 # DELETE
 php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1 -http_method DELETE -http_body {\"foo\":\"bar\"}
+
+# Help
+php start.php -help
 ```
-Output
+## Output
 ```shell
 测试中...
 最大请求并发: 100
