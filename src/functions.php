@@ -34,19 +34,43 @@ if (!function_exists('checkEnvironment')) {
 if (!function_exists('getOptions')) {
     function getOptions($args, array $option_names)
     {
+        $option_names_map = [];
+        foreach ($option_names as $name) {
+            $option_names_map[$name] = $name;
+        }
+
         $options = [];
         foreach ($args as $k => $arg) {
             if (strpos($arg, '-') === 0) {
                 if (strpos($arg, '--') === 0) {
-                    $option_value = substr($arg, 2);
-                    list($option_name, $option_value) = explode('=', $option_value);
-                    if (in_array($option_name, $option_names)) {
+                    $option = substr($arg, 2);
+                    if (strpos($option, '=') > 0) {
+                        $option_arr = explode('=', $option);
+                        if (count($option_arr) == 2) {
+                            list($option_name, $option_value) = $option_arr;
+                        } else {
+                            $option_name = $option;
+                            $option_value = '';
+                        }
+                    } else {
+                        $option_name = $option;
+                        $option_value = '';
+                    }
+                    if (array_key_exists($option_name, $option_names_map)) {
                         $options[$option_name] = $option_value;
                     }
                 } else {
                     $option_name = substr($arg, 1);
-                    if (in_array($option_name, $option_names)) {
-                        $options[$option_name] = $args[$k + 1];
+                    if (array_key_exists($option_name, $option_names_map)) {
+                        if (isset($args[$k + 1]) &&
+                            strpos($args[$k + 1], '-') !== 0 &&
+                            strpos($args[$k + 1], '--') !== 0
+                        ) {
+                            $option_value = $args[$k + 1];
+                        } else {
+                            $option_value = '';
+                        }
+                        $options[$option_name] = $option_value;
                     }
                 }
             }

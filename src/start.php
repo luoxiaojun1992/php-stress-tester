@@ -9,12 +9,18 @@ require_once __DIR__ . '/functions.php';
 checkEnvironment();
 
 //获取参数
-$options = getOptions($argv, ['c', 'n', 'host', 'uri', 'port', 'ssl', 'step', 'http_method', 'http_body', 'memory_limit']);
+$options = getOptions($argv, [
+    'c', 'n', 'host', 'h', 'uri', 'port', 'p', 'ssl', 'step', 'http_method',
+    'http_body', 'memory_limit', 'help'
+]);
+
 $c = $options['c'] ?? 100;
 $n = $options['n'] ?? 1000;
 $host = $options['host'] ?? 'www.baidu.com';
+$host = $options['h'] ?? 'www.baidu.com';
 $uri = $options['uri'] ?? '/';
 $port = $options['port'] ?? 443;
+$port = $options['p'] ?? 443;
 $ssl = boolval($options['ssl'] ?? 1);
 $step = $options['step'] ?? 10;
 $http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);
@@ -22,6 +28,15 @@ $http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
 $memory_limit = $options['memory_limit'] ?? 30000000;
 
+//帮助信息(待开发)
+if (isset($options['help'])) {
+    echo <<<EOF
+帮助信息：
+暂无
+EOF;
+    echo PHP_EOL;
+    exit(0);
+}
 
 //校验参数
 if ($c > MAX_COROUTINE) {
