@@ -10,6 +10,44 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
             'src' . DIRECTORY_SEPARATOR . 'functions.php';
     }
 
+    public function testGetOptions()
+    {
+        $expected = [
+            'c' => '100',
+            'n' => '1000',
+            'host' => 'www.baidu.com',
+            'uri' => '/',
+            'port' => '443',
+            'ssl' => '1',
+            'step' => '1',
+            'http_method' => 'POST',
+            'http_body' => '{"foo":"bar"}',
+        ];
+
+        $this->assertEquals($expected, getOptions([
+            '-c',
+            '100',
+            '-n',
+            '1000',
+            '-host',
+            'www.baidu.com',
+            '-uri',
+            '/',
+            '-port',
+            '443',
+            '-ssl',
+            '1',
+            '-step',
+            '1',
+            '-http_method',
+            'POST',
+            '-http_body',
+            '{"foo":"bar"}'
+        ], [
+            'c', 'n', 'host', 'uri', 'port', 'ssl', 'step', 'http_method', 'http_body'
+        ]));
+    }
+
     public function testHelp()
     {
         $expected = <<<EOF
