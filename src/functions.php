@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('checkEnvironment')) {
-    function checkEnvironment()
+    function checkEnvironment() : void
     {
         if (php_sapi_name() != 'cli') {
             echo '请在cli模式下运行本工具';
@@ -32,7 +32,7 @@ if (!function_exists('checkEnvironment')) {
 }
 
 if (!function_exists('getOptions')) {
-    function getOptions($args, array $option_names)
+    function getOptions(array $args, array $option_names) : array
     {
         $option_names_map = [];
         foreach ($option_names as $name) {
@@ -80,7 +80,7 @@ if (!function_exists('getOptions')) {
 }
 
 if (!function_exists('output')) {
-    function output($params, $test = false)
+    function output(array $params, bool $test = false) : void
     {
         //Clear stdout
         !$test && system('clear');
@@ -174,7 +174,7 @@ if (!function_exists('output')) {
 }
 
 if (!function_exists('help')) {
-    function help()
+    function help() : void
     {
         echo <<<EOF
 功能描述：

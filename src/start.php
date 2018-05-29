@@ -1,6 +1,8 @@
 #! /usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/constants.php';
 
 require_once __DIR__ . '/functions.php';
@@ -14,15 +16,15 @@ $options = getOptions($argv, [
     'http_body', 'memory_limit', 'help'
 ]);
 
-$c = $options['c'] ?? 100;
-$n = $options['n'] ?? 1000;
+$c = intval($options['c'] ?? 100);
+$n = intval($options['n'] ?? 1000);
 $host = $options['host'] ?? 'www.baidu.com';
 $host = $options['h'] ?? 'www.baidu.com';
 $uri = $options['uri'] ?? '/';
-$port = $options['port'] ?? 443;
-$port = $options['p'] ?? 443;
+$port = intval($options['port'] ?? 443);
+$port = intval($options['p'] ?? 443);
 $ssl = boolval($options['ssl'] ?? 1);
-$step = $options['step'] ?? 10;
+$step = intval($options['step'] ?? 10);
 $http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);
 $http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
