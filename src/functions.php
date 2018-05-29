@@ -80,10 +80,10 @@ if (!function_exists('getOptions')) {
 }
 
 if (!function_exists('output')) {
-    function output($params)
+    function output($params, $test = false)
     {
         //Clear stdout
-        system('clear');
+        !$test && system('clear');
 
         $executedTimes = $params['executedTimes'] ?? 0;
         $totalTime = $params['totalTime'] ?? 0;
@@ -100,6 +100,7 @@ if (!function_exists('output')) {
         $qps = $params['qps'] ?? 0;
         $i = $params['i'] ?? 0;
         $avgQps = $params['avgQps'] ?? 0;
+        $memoryUsage = $params['memoryUsage'] ?? 0;
 
         echo '请求并发: ';
         echo $i;
@@ -164,7 +165,7 @@ if (!function_exists('output')) {
         echo $avgQps;
         echo PHP_EOL;
         echo '内存占用: ';
-        echo memory_get_usage() / 1000;
+        echo $memoryUsage / 1000;
         echo 'KB';
         echo PHP_EOL;
         echo PHP_EOL;

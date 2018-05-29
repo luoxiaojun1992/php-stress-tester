@@ -126,9 +126,10 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
         //持续压测,每请求$c次,输出一次性能数据
         if ($n <= 0) {
             if ($executedTimes % $c == 0) {
+                $memoryUsage = memory_get_usage();
                 output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
                     'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-                    'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps'));
+                    'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage'));
             }
         }
     }
@@ -137,9 +138,10 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
         $qps = $successTimesPerSecond;
         $avgQps = $qps;
     }
+    $memoryUsage = memory_get_usage();
     output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-        'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps'));
+        'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage'));
     exit(0);
 });
 
