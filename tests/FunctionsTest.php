@@ -150,4 +150,35 @@ EOF;
         $this->expectOutputString($expected . str_repeat(PHP_EOL, 3));
         help();
     }
+
+    public function testOutputToCsv()
+    {
+        $memory_usage_byte = memory_get_usage();
+        $params = [
+            'executedTimes' => 1000,
+            'totalTime' => '41.335484266281',
+            'maxTime' => '0.16599607467651',
+            'minTime' => '0.02551007270813',
+            'successTimes' => 1000,
+            'successTotalTime' => '41.335484266281',
+            'successMaxTime' => '0.16599607467651',
+            'successMinTime' => '0.02551007270813',
+            'failedTimes' => 0,
+            'failedTotalTime' => 0,
+            'failedMaxTime' => 0,
+            'failedMinTime' => 0,
+            'qps' => 1000,
+            'i' => 100,
+            'avgQps' => 1000,
+            'memoryUsage' => $memory_usage_byte,
+        ];
+
+        $report_id = getReportId();
+        $report_fd = getReportFd($report_id);
+        outputToCsv($params, $report_fd);
+
+        $file_path = __DIR__ . '/../reports/report_' . $report_id . '.csv';
+        $this->assertStringEqualsFile($file_path, '1000,41.335484266281,0.16599607467651,0.02551007270813,1000,41.335484266281,0.16599607467651,0.02551007270813,0,0,0,0,1000,100,1000,' . $memory_usage_byte . ',41.335484266281,100,41.335484266281,0,0' . PHP_EOL);
+        unlink($file_path);
+    }
 }
