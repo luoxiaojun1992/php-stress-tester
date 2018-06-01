@@ -56,6 +56,17 @@ $i = 0;
 
 //统计压测性能
 go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
+    //报告id
+    $report_id = getReportId();
+
+    //初始化报告文件fd
+    $report_fd = getReportFd($report_id);
+    fputcsv($report_fd, [
+        'executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes', 'successTotalTime',
+        'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime', 'failedMaxTime', 'failedMinTime',
+        'qps', 'i', 'avgQps', 'memoryUsage', 'avgTime', 'successRate', 'successAvgTime', 'failRate', 'failAvgTime'
+    ]);
+
     //Regular
     $minTime = 0;
     $maxTime = 0;
@@ -129,9 +140,11 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
         if ($n <= 0) {
             if ($executedTimes % $c == 0) {
                 $memoryUsage = memory_get_usage();
-                output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
+                $params = compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
                     'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-                    'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage'));
+                    'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage');
+                output($params);
+                outputToCsv($params, $report_fd);
             }
         }
     }
@@ -141,9 +154,13 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
         $avgQps = $qps;
     }
     $memoryUsage = memory_get_usage();
-    output(compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
+    $params = compact('executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes',
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
-        'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage'));
+        'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage');
+    output($params);
+    outputToCsv($params, $report_fd);
+
+    fclose($report_fd);
     exit(0);
 });
 

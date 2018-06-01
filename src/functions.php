@@ -232,3 +232,63 @@ EOF;
         echo PHP_EOL;
     }
 }
+
+if (!function_exists('outputToCsv')) {
+    function outputToCsv($params, $fd)
+    {
+        $executedTimes = $params['executedTimes'] ?? 0;
+        $totalTime = $params['totalTime'] ?? 0;
+        $maxTime = $params['maxTime'] ?? 0;
+        $minTime = $params['minTime'] ?? 0;
+        $successTimes = $params['successTimes'] ?? 0;
+        $successTotalTime = $params['successTotalTime'] ?? 0;
+        $successMaxTime = $params['successMaxTime'] ?? 0;
+        $successMinTime = $params['successMinTime'] ?? 0;
+        $failedTimes = $params['failedTimes'] ?? 0;
+        $failedTotalTime = $params['failedTotalTime'] ?? 0;
+        $failedMaxTime = $params['failedMaxTime'] ?? 0;
+        $failedMinTime = $params['failedMinTime'] ?? 0;
+        $qps = $params['qps'] ?? 0;
+        $i = $params['i'] ?? 0;
+        $avgQps = $params['avgQps'] ?? 0;
+        $memoryUsage = $params['memoryUsage'] ?? 0;
+        $avgTime = $executedTimes > 0 ? ($totalTime / $executedTimes) * 1000 : 0;
+        $successRate = $executedTimes > 0 ? ($successTimes / $executedTimes) * 100 : 0;
+        $successAvgTime = $successTimes > 0 ? ($successTotalTime / $successTimes) * 1000 : 0;
+        $failRate = $executedTimes > 0 ? ($failedTimes / $executedTimes) * 100 : 0;
+        $failAvgTime = $failedTimes > 0 ? ($failedTotalTime / $failedTimes) * 1000 : 0;
+
+        fputcsv($fd, compact(
+            'executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes', 'successTotalTime',
+            'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime', 'failedMaxTime', 'failedMinTime',
+            'qps', 'i', 'avgQps', 'memoryUsage', 'avgTime', 'successRate', 'successAvgTime', 'failRate', 'failAvgTime'
+        ));
+    }
+}
+
+if (!function_exists('getReportFd')) {
+    function getReportFd($reportId)
+    {
+        $csv_filename = 'report_' . $reportId . '.csv';
+
+        //文件不存在，创建
+        $csv_file_dir = __DIR__ . '/../reports/';
+        $csv_file_path = $csv_file_dir . $csv_filename;
+        if (!is_dir($csv_file_dir)) {
+            mkdir($csv_file_dir, 0777, true);
+        }
+        if (!file_exists($csv_file_path)) {
+            touch($csv_file_path);
+        }
+
+        return fopen($csv_file_path, 'wb');
+    }
+}
+
+if (!function_exists('getReportId')) {
+    function getReportId()
+    {
+        date_default_timezone_set('PRC');
+        return (new DateTime())->format('YmdHi') . (string) intval(microtime(true) * 10000);
+    }
+}
