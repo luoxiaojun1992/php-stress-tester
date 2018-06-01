@@ -24,6 +24,9 @@ php start.php -c 100 -n 1000 -host www.baidu.com -uri / -port 443 -ssl 1 -step 1
 
 # Help
 php start.php -help
+
+# Draw QPS graph
+python tools/draw.py ~/php-stress-tester/reports/report_20180601144315278353823169.csv qps 1
 ```
 ## Output
 ```shell
@@ -48,6 +51,9 @@ php start.php -help
 平均QPS: 1000
 内存占用: 2012.72KB
 ```
+
+## QPS Graph
+![QPS Figure](qps_figure_demo.png)
 
 ## Arguments
 1. -c Concurrency
