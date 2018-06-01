@@ -14,6 +14,8 @@ with open(sys.argv[1],'rb') as csvfile:
 
 plt.figure(1)
 plt.title(sys.argv[2])
+plt.xlabel('executedTimes')
+plt.ylabel(sys.argv[2])
 plt.plot(executedTimes, metrics)
 
 if sys.argv[3] == '1':
