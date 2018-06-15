@@ -66,3 +66,4 @@ python tools/draw.py ~/php-stress-tester/reports/report_201806011443152783538231
 8. -http_method HTTP Method
 9. -http_body HTTP Body
 10. -memory_limit Memory Limit
+11. -max_coroutine Max Coroutine

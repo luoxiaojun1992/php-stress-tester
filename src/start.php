@@ -13,7 +13,7 @@ checkEnvironment();
 //获取参数
 $options = getOptions($argv, [
     'c', 'n', 'host', 'h', 'uri', 'port', 'p', 'ssl', 'step', 'http_method',
-    'http_body', 'memory_limit', 'help'
+    'http_body', 'memory_limit', 'help', 'max_coroutine',
 ]);
 
 $c = intval($options['c'] ?? 100);
@@ -29,6 +29,7 @@ $http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);
 $http_body = $options['http_body'] ?? '';
 $http_body_arr = json_decode($http_body, true);
 $memory_limit = doubleval($options['memory_limit'] ?? 30000000);
+$max_coroutine = intval($options['max_coroutine'] ?? MAX_COROUTINE);
 
 //帮助信息
 if (isset($options['help'])) {
@@ -37,8 +38,8 @@ if (isset($options['help'])) {
 }
 
 //校验参数
-if ($c > MAX_COROUTINE) {
-    echo '最大支持2999并发';
+if ($c > $max_coroutine) {
+    echo '最大支持' . $max_coroutine . '并发';
     echo PHP_EOL;
     exit(1);
 }
@@ -47,6 +48,9 @@ if (!is_int($port) && !ctype_digit($port)) {
     echo PHP_EOL;
     exit(1);
 }
+
+//设置max_coroutine
+co::set(['max_coroutine' => $max_coroutine]);
 
 //请求时间channel
 $executeTime = new chan($n > 0 ? $n : $c * 10);
