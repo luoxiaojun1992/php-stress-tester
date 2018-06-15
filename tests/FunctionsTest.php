@@ -173,12 +173,13 @@ EOF;
             'memoryUsage' => $memory_usage_byte,
         ];
 
-        go(function () use ($params, $memory_usage_byte) {
+        $thisObj = $this;
+        go(function () use ($params, $memory_usage_byte, $thisObj) {
             $report_id = getReportId();
             outputToCsv($params, $report_id);
 
             $file_path = __DIR__ . '/../reports/report_' . $report_id . '.csv';
-            $this->assertStringEqualsFile($file_path, '1000,41.335484266281,0.16599607467651,0.02551007270813,1000,41.335484266281,0.16599607467651,0.02551007270813,0,0,0,0,1000,100,1000,' . $memory_usage_byte . ',41.335484266281,100,41.335484266281,0,0' . PHP_EOL);
+            $thisObj->assertStringEqualsFile($file_path, '1000,41.335484266281,0.16599607467651,0.02551007270813,1000,41.335484266281,0.16599607467651,0.02551007270813,0,0,0,0,1000,100,1000,' . $memory_usage_byte . ',41.335484266281,100,41.335484266281,0,0' . PHP_EOL);
             unlink($file_path);
         });
         swoole_event::wait();

@@ -205,3 +205,5 @@ echo PHP_EOL;
 echo '最大请求并发: ';
 echo $c;
 echo PHP_EOL;
+
+swoole_event::wait();
