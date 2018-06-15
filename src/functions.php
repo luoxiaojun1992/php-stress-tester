@@ -234,7 +234,7 @@ EOF;
 }
 
 if (!function_exists('outputToCsv')) {
-    function outputToCsv($params, $fd)
+    function outputToCsv($params, $reportId)
     {
         $executedTimes = $params['executedTimes'] ?? 0;
         $totalTime = $params['totalTime'] ?? 0;
@@ -258,11 +258,13 @@ if (!function_exists('outputToCsv')) {
         $failRate = $executedTimes > 0 ? ($failedTimes / $executedTimes) * 100 : 0;
         $failAvgTime = $failedTimes > 0 ? ($failedTotalTime / $failedTimes) * 1000 : 0;
 
-        fputcsv($fd, compact(
-            'executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes', 'successTotalTime',
-            'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime', 'failedMaxTime', 'failedMinTime',
-            'qps', 'i', 'avgQps', 'memoryUsage', 'avgTime', 'successRate', 'successAvgTime', 'failRate', 'failAvgTime'
-        ));
+        $fd = getReportFd($reportId);
+        co::fwrite($fd, implode(',', compact(
+                'executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes', 'successTotalTime',
+                'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime', 'failedMaxTime', 'failedMinTime',
+                'qps', 'i', 'avgQps', 'memoryUsage', 'avgTime', 'successRate', 'successAvgTime', 'failRate', 'failAvgTime'
+            )) . PHP_EOL);
+        fclose($fd);
     }
 }
 
@@ -281,7 +283,7 @@ if (!function_exists('getReportFd')) {
             touch($csv_file_path);
         }
 
-        return fopen($csv_file_path, 'wb');
+        return fopen($csv_file_path, 'ab');
     }
 }
 

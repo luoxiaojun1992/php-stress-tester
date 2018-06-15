@@ -65,11 +65,11 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
 
     //初始化报告文件fd
     $report_fd = getReportFd($report_id);
-    fputcsv($report_fd, [
+    co::fwrite($report_fd, implode(',', [
         'executedTimes', 'totalTime', 'maxTime', 'minTime', 'successTimes', 'successTotalTime',
         'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime', 'failedMaxTime', 'failedMinTime',
         'qps', 'i', 'avgQps', 'memoryUsage', 'avgTime', 'successRate', 'successAvgTime', 'failRate', 'failAvgTime'
-    ]);
+    ]) . PHP_EOL);
 
     //Regular
     $minTime = 0;
@@ -148,7 +148,9 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
                     'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
                     'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage');
                 output($params);
-                outputToCsv($params, $report_fd);
+                go(function () use ($params, $report_id) {
+                    outputToCsv($params, $report_id);
+                });
             }
         }
     }
@@ -162,7 +164,7 @@ go(function () use ($executeTime, $n, $c, $memory_limit, &$i){
         'successTotalTime', 'successMaxTime', 'successMinTime', 'failedTimes', 'failedTotalTime',
         'failedMaxTime', 'failedMinTime', 'qps', 'i', 'avgQps', 'memoryUsage');
     output($params);
-    outputToCsv($params, $report_fd);
+    outputToCsv($params, $report_id);
 
     fclose($report_fd);
     exit(0);
