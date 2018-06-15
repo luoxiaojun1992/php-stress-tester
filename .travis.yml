@@ -5,7 +5,7 @@ before_script:
       - composer install -vvv
       - wget https://github.com/swoole/swoole-src/archive/v4.0.0.tar.gz
       - tar -zxvf v4.0.0.tar.gz
-      - cd v4.0.0.tar.gz
+      - cd swoole-src-4.0.0
       - phpize
       - ./configure
       - make -j 2
