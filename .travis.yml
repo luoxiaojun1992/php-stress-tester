@@ -3,4 +3,5 @@ php:
       - '7.1'
 before_script:
       - composer install -vvv
+      - pecl install swoole
 script: ./vendor/bin/phpunit tests
