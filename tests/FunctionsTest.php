@@ -179,6 +179,14 @@ EOF;
             outputToCsv($params, $report_id);
 
             $file_path = __DIR__ . '/../reports/report_' . $report_id . '.csv';
+
+            $start = time();
+            while (!file_get_contents($file_path)) {
+                if (time() - $start > 5) {
+                    break;
+                }
+            }
+
             $thisObj->assertStringEqualsFile($file_path, '1000,41.335484266281,0.16599607467651,0.02551007270813,1000,41.335484266281,0.16599607467651,0.02551007270813,0,0,0,0,1000,100,1000,' . $memory_usage_byte . ',41.335484266281,100,41.335484266281,0,0' . PHP_EOL);
             unlink($file_path);
         });
