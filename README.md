@@ -1,5 +1,7 @@
 # php-stress-tester
 
+[![Build Status](https://travis-ci.org/luoxiaojun1992/php-stress-tester.svg?branch=master)](https://travis-ci.org/luoxiaojun1992/php-stress-tester)
+
 ## Description
 A simple stress tester based on swoole coroutine.
 
