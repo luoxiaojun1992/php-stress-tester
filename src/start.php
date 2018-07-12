@@ -18,11 +18,15 @@ $options = getOptions($argv, [
 
 $c = intval($options['c'] ?? 100);
 $n = intval($options['n'] ?? 1000);
-$host = $options['host'] ?? 'www.baidu.com';
-$host = $options['h'] ?? 'www.baidu.com';
+$host = $options['host'] ?? null;
+if (is_null($host)) {
+    $host = $options['h'] ?? 'www.baidu.com';
+}
 $uri = $options['uri'] ?? '/';
-$port = intval($options['port'] ?? 443);
-$port = intval($options['p'] ?? 443);
+$port = intval($options['port'] ?? null);
+if ($port <= 0) {
+    $port = intval($options['p'] ?? 443);
+}
 $ssl = boolval($options['ssl'] ?? 1);
 $step = intval($options['step'] ?? 10);
 $http_method = strtoupper($options['http_method'] ?? HTTP_METHOD_GET);

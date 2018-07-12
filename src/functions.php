@@ -62,13 +62,22 @@ if (!function_exists('getOptions')) {
                 } else {
                     $option_name = substr($arg, 1);
                     if (array_key_exists($option_name, $option_names_map)) {
-                        if (isset($args[$k + 1]) &&
-                            strpos($args[$k + 1], '-') !== 0 &&
-                            strpos($args[$k + 1], '--') !== 0
-                        ) {
-                            $option_value = $args[$k + 1];
-                        } else {
-                            $option_value = '';
+                        $option_value = '';
+                        if (isset($args[$k + 1])) {
+                            $next_arg = $args[$k + 1];
+                            if (strpos($next_arg, '-') === 0) {
+                                if (strpos($next_arg, '--') === 0) {
+                                    if (!array_key_exists(substr($next_arg, 2), $option_names_map)) {
+                                        $option_value = $next_arg;
+                                    }
+                                } else {
+                                    if (!array_key_exists(substr($next_arg, 1), $option_names_map)) {
+                                        $option_value = $next_arg;
+                                    }
+                                }
+                            } else {
+                                $option_value = $next_arg;
+                            }
                         }
                         $options[$option_name] = $option_value;
                     }
